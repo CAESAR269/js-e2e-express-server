@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - 
+- task: NodeTool@0
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '6.x'
+    checkLatest: true
+
+steps:
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: '**/*.package.json'
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    workingDir: '**/*.package.json'
+    customCommand: 'npm build start'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure subscription 1(977812bc-0cfb-4c57-8912-a7804ccf8fba)'
+    appType: 'webAppLinux'
+    WebAppName: 'react7'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
